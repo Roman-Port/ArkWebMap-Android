@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item android:title="@string/mainmenu_tribe">
+        <menu>
+            <item
+                android:id="@+id/locate_dinos"
+                android:icon="@drawable/baseline_near_me_24"
+                android:title="@string/mainmenu_tribe_locatedinos" />
+            <item
+                android:id="@+id/search_inventories"
+                android:icon="@drawable/baseline_search_24"
+                android:title="@string/mainmenu_tribe_searchinventories" />
+        </menu>
+    </item>
+    <item android:title="@string/mainmenu_server">
+        <menu>
+            <item
+                android:id="@+id/hide_server"
+                android:icon="@drawable/baseline_exit_to_app_24"
+                android:title="@string/mainmenu_server_hide" />
+        </menu>
+    </item>
+</menu>

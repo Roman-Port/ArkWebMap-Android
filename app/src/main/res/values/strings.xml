@@ -9,4 +9,11 @@
 
     <string name="login_welcome">Welcome!</string>
     <string name="login_description">To get started with ArkWebMap, you\'ll need to sign in with Steam to access your Ark servers and tribes.</string>
+
+    <string name="mainmenu_tribe">Tribe</string>
+    <string name="mainmenu_tribe_locatedinos">Locate Dinos</string>
+    <string name="mainmenu_tribe_searchinventories">Search Inventories</string>
+    <string name="mainmenu_server">Server</string>
+    <string name="mainmenu_server_hide">Hide Server</string>
+    <string name="mainmenu_server_delete">Delete Server</string>
 </resources>
