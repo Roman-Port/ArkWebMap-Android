@@ -34,6 +34,7 @@
                 <!-- note that the leading "/" is required for pathPrefix-->
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

@@ -25,12 +25,25 @@ import java.util.Map;
 
 public class WebUser {
 
-    public static void SendAuthenticatedRequest(final AppCompatActivity c, String url, final Response.Listener<Object> callback, final Type returnType) {
+    public static void SendAuthenticatedGetRequest(final AppCompatActivity c, String url, final Response.Listener<Object> callback, final Type returnType) {
+        SendAuthenticatedRequest(c, url, callback, new byte[0], Request.Method.GET, returnType);
+    }
+
+    public static void SendAuthenticatedPostRequest(final AppCompatActivity c, String url, Object payload,  final Response.Listener<Object> callback, final Type returnType) {
+        //Serialize
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        String payloadString = gson.toJson(payload);
+
+        SendAuthenticatedRequest(c, url, callback, payloadString.getBytes(), Request.Method.POST, returnType);
+    }
+
+    public static void SendAuthenticatedRequest(final AppCompatActivity c, String url, final Response.Listener<Object> callback, final byte[] body, final int method, final Type returnType) {
         Log("Entering SendAuthenticatedRequest with GET to "+url);
 
         //Send request
         RequestQueue queue = Volley.newRequestQueue(c);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(method, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -74,6 +87,11 @@ public class WebUser {
 
 
         }) {
+        @Override
+        public byte[] getBody() throws AuthFailureError {
+            return body;
+        }
+
         @Override
         public Map<String, String> getHeaders() throws AuthFailureError {
             //Set auth headers. Grab from persist storage.

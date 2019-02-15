@@ -27,7 +27,7 @@ public class ReturnFromLoginActivity extends AppCompatActivity {
 
         //Now, request access to the preflight token to get our real token.
         final ReturnFromLoginActivity context = this;
-        WebUser.SendAuthenticatedRequest(this, "https://ark.romanport.com/api/auth/validate_preflight_token?id="+preflightToken, new Response.Listener<Object>() {
+        WebUser.SendAuthenticatedGetRequest(this, "https://ark.romanport.com/api/auth/validate_preflight_token?id="+preflightToken, new Response.Listener<Object>() {
             @Override
             public void onResponse(Object response) {
                 Log.println(Log.DEBUG, "ARK-NET", "Got user data when finishing login. Saving...");
