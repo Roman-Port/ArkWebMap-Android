@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 
 import com.android.volley.Response;
 import com.romanport.arkwebmap.NetEntities.AuthReply;
@@ -34,6 +35,14 @@ public class MainActivity extends AppCompatActivity
 
         //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         //navigationView.setNavigationItemSelectedListener(this);
+
+        //Configure WebView
+        WebView mapWebview = GetMapWebview();
+        mapWebview.getSettings().setJavaScriptEnabled(true);
+        mapWebview.getSettings().setLoadWithOverviewMode(true);
+        mapWebview.getSettings().setUseWideViewPort(true);
+        mapWebview.getSettings();
+        mapWebview.setBackground(getDrawable(R.color.colorPrimary));
 
         //Authenticate user
         WebUser.SendAuthenticatedRequest(this, "https://ark.romanport.com/api/users/@me/", new Response.Listener<Object>() {
@@ -100,4 +109,9 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }*/
+
+    //Functions for getting things
+    public WebView GetMapWebview() {
+        return (WebView)findViewById(R.id.map_webview);
+    }
 }
