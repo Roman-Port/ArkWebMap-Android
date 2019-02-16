@@ -1,6 +1,7 @@
 package com.romanport.arkwebmap;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,6 +31,7 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.romanport.arkwebmap.Entities.MapStartupCommand;
+import com.romanport.arkwebmap.NetEntities.ArkServerNotificationsMenuActivity;
 import com.romanport.arkwebmap.NetEntities.AuthReply;
 import com.romanport.arkwebmap.NetEntities.OkReply;
 import com.romanport.arkwebmap.NetEntities.PostNotificationTokenPayload;
@@ -128,19 +130,12 @@ public class MainActivity extends AppCompatActivity
         //Handle button clicks on main menu
         int id = item.getItemId();
 
-        /*if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }*/
+        if (id == R.id.server_notifications_menu_btn) {
+            //Open the activity for the settings page.
+            Intent intent = new Intent(this, ArkServerNotificationsMenuActivity.class);
+            intent.putExtra("com.romanport.arkwebmap.SERVER_ID", currentServerId);
+            startActivity(intent);
+        }
 
         //Close drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -209,11 +204,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     //Servers
+    public String currentServerId;
     public ArkServerCreateSession currentSession;
     public ArkTribe currentTribe;
 
     public void OnOpenServer(UsersMeServer requestServer) {
         //Update UI elements
+        currentServerId = requestServer.id;
         ((TextView)findViewById(R.id.serverMenuName)).setText(requestServer.display_name);
 
         //Create a session to get new URLs

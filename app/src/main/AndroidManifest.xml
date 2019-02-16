@@ -37,6 +37,10 @@
                 <!-- note that the leading "/" is required for pathPrefix -->
             </intent-filter>
         </activity>
+        <activity
+            android:name=".NetEntities.ArkServerNotificationsMenuActivity"
+            android:label="@string/title_activity_ark_server_notifications_menu"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

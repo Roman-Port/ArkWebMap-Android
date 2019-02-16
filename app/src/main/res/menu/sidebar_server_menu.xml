@@ -17,6 +17,10 @@
     <item android:title="@string/mainmenu_server">
         <menu>
             <item
+                android:id="@+id/server_notifications_menu_btn"
+                android:icon="@drawable/baseline_exit_to_app_24"
+                android:title="@string/mainmenu_server_notifications" />
+            <item
                 android:id="@+id/hide_server"
                 android:icon="@drawable/baseline_exit_to_app_24"
                 android:title="@string/mainmenu_server_hide" />
