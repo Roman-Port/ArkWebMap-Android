@@ -5,10 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".FragmentServerMapView">
 
+    <!--Layout width is temporary. Set to full when the map has loaded -->
     <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/map_webview"
-        android:background="@color/colorPrimary" />
+        android:visibility="invisible"
+        android:background="@color/colorPrimary"/>
 
 </FrameLayout>

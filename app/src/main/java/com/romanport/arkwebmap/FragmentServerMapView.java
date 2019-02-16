@@ -3,10 +3,13 @@ package com.romanport.arkwebmap;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+
+import com.romanport.arkwebmap.Parts.ArkMap.ArkMapJavascriptInterface;
 
 
 /**
@@ -75,15 +78,31 @@ public class FragmentServerMapView extends Fragment {
 
         //Configure WebView
         WebView mapWebview = v.findViewById(R.id.map_webview);
+        mapWebview.setBackground(getActivity().getDrawable(R.color.colorPrimary));
         mapWebview.getSettings().setJavaScriptEnabled(true);
         mapWebview.getSettings().setLoadWithOverviewMode(true);
         mapWebview.getSettings().setUseWideViewPort(true);
+        mapWebview.addJavascriptInterface(new ArkMapJavascriptInterface(getContext(), this), "app");
         mapWebview.getSettings();
 
         //Load WebView
         mapWebview.loadUrl(mWebViewUrl);
 
         return v;
+    }
+
+    public void OnMapReady() {
+        //Called by the JS client. Tells us to show the WebView.
+        //We'll need to run this on the UI thread.
+        getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                WebView wv = GetMapWebview();
+                wv.setVisibility(View.VISIBLE);
+            }
+        });
+
     }
 
     public WebView GetMapWebview() {

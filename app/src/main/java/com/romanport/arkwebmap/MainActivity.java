@@ -270,6 +270,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDinoClick(String url) {
-        //Called when a dinosaur is clicked on the map and we need to show the modal.
+        //TODO: Called when a dinosaur is clicked on the map and we need to show the modal.
     }
 }
