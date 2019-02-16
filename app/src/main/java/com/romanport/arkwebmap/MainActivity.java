@@ -3,10 +3,13 @@ package com.romanport.arkwebmap;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -39,13 +42,16 @@ import com.romanport.arkwebmap.NetEntities.Servers.ArkServerCreateSession;
 import com.romanport.arkwebmap.NetEntities.Servers.Tribes.ArkTribe;
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeReply;
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeServer;
+import android.support.v4.app.Fragment;
 
+import java.net.URI;
 import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener {
 
     public UsersMeReply user;
+    public Fragment activeTabFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +69,13 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //Configure WebView
-        WebView mapWebview = GetMapWebview();
-        mapWebview.getSettings().setJavaScriptEnabled(true);
-        mapWebview.getSettings().setLoadWithOverviewMode(true);
-        mapWebview.getSettings().setUseWideViewPort(true);
-        mapWebview.getSettings();
-        mapWebview.setBackground(getDrawable(R.color.colorPrimary));
+        //Create the Fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentNoActiveServerDefault fragment = new FragmentNoActiveServerDefault();
+        activeTabFragment = fragment;
+        fragmentTransaction.add(R.id.main_fragment_container, fragment);
+        fragmentTransaction.commit();
 
         //Authenticate user
         WebUser.SendAuthenticatedGetRequest(this, "https://ark.romanport.com/api/users/@me/?hideInvalid=false", new Response.Listener<Object>() {
@@ -85,6 +91,15 @@ public class MainActivity extends AppCompatActivity
                 OnGotUpdatedServers(reply);
             }
         }, UsersMeReply.class);
+    }
+
+    public void SwitchMainFragment(Fragment f) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.remove(activeTabFragment); //Remove exiting
+        fragmentTransaction.add(R.id.main_fragment_container, f); //Add new
+        activeTabFragment = f; //Set the current fragment.
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -194,11 +209,6 @@ public class MainActivity extends AppCompatActivity
                 });
     }
 
-    //Functions for getting things
-    public WebView GetMapWebview() {
-        return (WebView)findViewById(R.id.map_webview);
-    }
-
     public void ShowFailure(String message) {
         Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
     }
@@ -250,9 +260,16 @@ public class MainActivity extends AppCompatActivity
 
         //Grab map and load
         try {
-            GetMapWebview().loadUrl("https://ark.romanport.com/standalone_map/#"+ URLEncoder.encode(payloadString, "UTF-8"));
+            FragmentServerMapView f = new FragmentServerMapView();
+            f.mWebViewUrl = "https://ark.romanport.com/standalone_map/#"+ URLEncoder.encode(payloadString, "UTF-8");
+            SwitchMainFragment(f);
         } catch (Exception ex) {
             ShowFailure("Failed to load map.");
         }
+    }
+
+    @Override
+    public void onDinoClick(String url) {
+        //Called when a dinosaur is clicked on the map and we need to show the modal.
     }
 }
