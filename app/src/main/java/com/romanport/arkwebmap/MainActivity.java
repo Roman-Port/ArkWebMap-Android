@@ -1,6 +1,7 @@
 package com.romanport.arkwebmap;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -25,11 +27,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.romanport.arkwebmap.Entities.MapStartupCommand;
 import com.romanport.arkwebmap.NetEntities.AuthReply;
 import com.romanport.arkwebmap.NetEntities.OkReply;
 import com.romanport.arkwebmap.NetEntities.PostNotificationTokenPayload;
+import com.romanport.arkwebmap.NetEntities.Servers.ArkServerCreateSession;
+import com.romanport.arkwebmap.NetEntities.Servers.Tribes.ArkTribe;
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeReply;
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeServer;
+
+import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -106,6 +115,11 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -190,9 +204,58 @@ public class MainActivity extends AppCompatActivity
         return (WebView)findViewById(R.id.map_webview);
     }
 
+    public void ShowFailure(String message) {
+        Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+    }
 
     //Servers
+    public ArkServerCreateSession currentSession;
+    public ArkTribe currentTribe;
+
     public void OnOpenServer(UsersMeServer requestServer) {
-        Toast.makeText(getApplicationContext(),requestServer.display_name,Toast.LENGTH_SHORT).show();
+        //Update UI elements
+        ((TextView)findViewById(R.id.serverMenuName)).setText(requestServer.display_name);
+
+        //Create a session to get new URLs
+        final AppCompatActivity c = this;
+        WebUser.SendAuthenticatedGetRequest(c, requestServer.endpoint_createsession, new Response.Listener<Object>() {
+            @Override
+            public void onResponse(Object response) {
+                currentSession = (ArkServerCreateSession)response;
+
+                //Now, request the Ark tribe.
+                WebUser.SendAuthenticatedGetRequest(c, currentSession.endpoint_tribes, new Response.Listener<Object>() {
+                    @Override
+                    public void onResponse(Object tribe_response) {
+                        currentTribe = (ArkTribe)tribe_response;
+
+                        OnGotNewMapData();
+                    }
+                }, ArkTribe.class);
+            }
+        }, ArkServerCreateSession.class);
+    }
+
+    public void OnGotNewMapData() {
+        //Create a command to send to the map.
+        MapStartupCommand mapStartup = new MapStartupCommand();
+        mapStartup.mapUrl = currentSession.endpoint_game_map;
+        mapStartup.dinos = currentTribe.dinos;
+        UpdateMap(mapStartup);
+
+    }
+
+    public void UpdateMap(MapStartupCommand mapStartup) {
+        //Serialize JSON and send to the map.
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        String payloadString = gson.toJson(mapStartup);
+
+        //Grab map and load
+        try {
+            GetMapWebview().loadUrl("https://ark.romanport.com/standalone_map/#"+ URLEncoder.encode(payloadString, "UTF-8"));
+        } catch (Exception ex) {
+            ShowFailure("Failed to load map.");
+        }
     }
 }
