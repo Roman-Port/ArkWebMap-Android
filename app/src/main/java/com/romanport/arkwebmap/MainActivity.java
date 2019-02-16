@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import com.romanport.arkwebmap.NetEntities.AuthReply;
 import com.romanport.arkwebmap.NetEntities.OkReply;
 import com.romanport.arkwebmap.NetEntities.PostNotificationTokenPayload;
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeReply;
+import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeServer;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_container);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity
         mapWebview.setBackground(getDrawable(R.color.colorPrimary));
 
         //Authenticate user
-        WebUser.SendAuthenticatedGetRequest(this, "https://ark.romanport.com/api/users/@me/?hideInvalid=true", new Response.Listener<Object>() {
+        WebUser.SendAuthenticatedGetRequest(this, "https://ark.romanport.com/api/users/@me/?hideInvalid=false", new Response.Listener<Object>() {
             @Override
             public void onResponse(Object response) {
                 UsersMeReply reply = (UsersMeReply)response;
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        //Handle button clicks on main menu
         int id = item.getItemId();
 
         /*if (id == R.id.nav_camera) {
@@ -126,6 +128,7 @@ public class MainActivity extends AppCompatActivity
 
         }*/
 
+        //Close drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -136,6 +139,20 @@ public class MainActivity extends AppCompatActivity
         ArkServerListEntryAdapter adapter=new ArkServerListEntryAdapter(this, user.servers);
         ListView list =(ListView)findViewById(R.id.server_list);
         list.setAdapter(adapter);
+
+        //Attach listener
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Set server
+                OnOpenServer(user.servers[position]);
+
+                //Close drawer
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
     }
 
     public void SubmitNewCloudMessagingToken() {
@@ -171,5 +188,11 @@ public class MainActivity extends AppCompatActivity
     //Functions for getting things
     public WebView GetMapWebview() {
         return (WebView)findViewById(R.id.map_webview);
+    }
+
+
+    //Servers
+    public void OnOpenServer(UsersMeServer requestServer) {
+        Toast.makeText(getApplicationContext(),requestServer.display_name,Toast.LENGTH_SHORT).show();
     }
 }

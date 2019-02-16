@@ -5,8 +5,9 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:openDrawer="start">
+
+
 
     <include
         layout="@layout/app_bar_main"
@@ -16,7 +17,6 @@
     <android.support.design.widget.NavigationView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         android:layout_gravity="start">
 
         <LinearLayout
@@ -25,9 +25,13 @@
 
             <ListView
                 android:id="@+id/server_list"
-                android:layout_width="60dp"
+                android:layout_width="70dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorAccentDark">
+                android:background="@color/colorAccentDark"
+                android:divider="@android:color/transparent"
+                android:padding="10dp"
+                android:scrollbars="none"
+                android:dividerHeight="8dp">
             </ListView>
 
             <android.support.design.widget.NavigationView

@@ -3,4 +3,5 @@
     <dimen name="server_name_margin_horizontal">16dp</dimen>
     <dimen name="server_name_margin_vertical">20dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="server_entry_size">50dp</dimen>
 </resources>

@@ -10,6 +10,10 @@ import android.widget.TextView;
 
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeServer;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.picasso.Target;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ArkServerListEntryAdapter extends ArrayAdapter<String> {
 
@@ -32,8 +36,11 @@ public class ArkServerListEntryAdapter extends ArrayAdapter<String> {
         View rowView=inflater.inflate(R.layout.ark_server_list_entry, null,true);
 
         //Add image
-        ImageView image = (ImageView)rowView.findViewById(R.id.server_entry_icon);
-        Picasso.get().load(data.image_url).into(image);
+        RequestCreator p = Picasso.get().load(data.image_url);
+        p.noFade();
+        p.error(R.drawable.failed_to_load_image);
+        CircleImageView t = (CircleImageView)rowView.findViewById(R.id.server_entry_icon);
+        p.into(t);
 
         return rowView;
 
