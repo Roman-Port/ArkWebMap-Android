@@ -40,6 +40,7 @@ import com.romanport.arkwebmap.NetEntities.Dinos.ArkDinosReply;
 import com.romanport.arkwebmap.NetEntities.OkReply;
 import com.romanport.arkwebmap.NetEntities.PostNotificationTokenPayload;
 import com.romanport.arkwebmap.NetEntities.Servers.ArkServerCreateSession;
+import com.romanport.arkwebmap.NetEntities.Servers.PingReply;
 import com.romanport.arkwebmap.NetEntities.Servers.Tribes.ArkTribe;
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeReply;
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeServer;
@@ -127,11 +128,6 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -215,36 +211,53 @@ public class MainActivity extends AppCompatActivity
     }
 
     //Servers
+    public UsersMeServer currentServer;
     public String currentServerId;
     public ArkServerCreateSession currentSession;
     public ArkTribe currentTribe;
 
-    public void OnOpenServer(UsersMeServer requestServer) {
-        //Update UI elements
-        currentServerId = requestServer.id;
-        ((TextView)findViewById(R.id.serverMenuName)).setText(requestServer.display_name);
-
-        //Create a session to get new URLs
+    public void OnOpenServer(final UsersMeServer requestServer) {
+        //Ping server to make sure it is ok
         final AppCompatActivity c = this;
-        WebUser.SendAuthenticatedGetRequest(c, requestServer.endpoint_createsession, new Response.Listener<Object>() {
+        WebUser.SendAuthenticatedGetRequest(c, requestServer.endpoint_ping, new Response.Listener<Object>() {
             @Override
-            public void onResponse(Object response) {
-                currentSession = (ArkServerCreateSession)response;
+            public void onResponse(Object objPingReply) {
+                //If the server is offline, stop
+                PingReply pingReply = (PingReply)objPingReply;
+                if(!pingReply.online) {
+                    //Show error toast
+                    Toast.makeText(c, c.getString(R.string.error_ping_offline), Toast.LENGTH_LONG).show();
+                } else {
+                    //Continue to load server
+                    currentServer = requestServer;
+                    //Create a session to get new URLs
+                    WebUser.SendAuthenticatedGetRequest(c, requestServer.endpoint_createsession, new Response.Listener<Object>() {
+                        @Override
+                        public void onResponse(Object response) {
+                            currentSession = (ArkServerCreateSession)response;
 
-                //Now, request the Ark tribe.
-                WebUser.SendAuthenticatedGetRequest(c, currentSession.endpoint_tribes, new Response.Listener<Object>() {
-                    @Override
-                    public void onResponse(Object tribe_response) {
-                        currentTribe = (ArkTribe)tribe_response;
+                            //Now, request the Ark tribe.
+                            WebUser.SendAuthenticatedGetRequest(c, currentSession.endpoint_tribes, new Response.Listener<Object>() {
+                                @Override
+                                public void onResponse(Object tribe_response) {
+                                    currentTribe = (ArkTribe)tribe_response;
 
-                        OnGotNewMapData();
-                    }
-                }, ArkTribe.class);
+                                    OnGotNewMapData();
+                                }
+                            }, ArkTribe.class);
+                        }
+                    }, ArkServerCreateSession.class);
+                }
             }
-        }, ArkServerCreateSession.class);
+        }, PingReply.class);
+
+
     }
 
     public void OnGotNewMapData() {
+        //Update UI elements
+        ((TextView)findViewById(R.id.serverMenuName)).setText(currentServer.display_name);
+
         //Create a command to send to the map.
         MapStartupCommand mapStartup = new MapStartupCommand();
         mapStartup.mapUrl = currentSession.endpoint_game_map;
