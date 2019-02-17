@@ -15,6 +15,10 @@ public class ActivityHub extends AppCompatActivity {
         setContentView(R.layout.activity_hub);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Test
+        MainActivity.StartActivityWithServer(this, WebUser.me.servers[0]);
+        finish();
     }
 
 }

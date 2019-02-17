@@ -1,8 +1,9 @@
 package com.romanport.arkwebmap.NetEntities.UsersMe;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UsersMeServer {
+public class UsersMeServer implements Serializable {
     public String display_name;
     public String image_url;
     public String owner_uid;

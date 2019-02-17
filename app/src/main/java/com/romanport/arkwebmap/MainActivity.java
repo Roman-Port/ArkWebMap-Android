@@ -1,5 +1,7 @@
 package com.romanport.arkwebmap;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -44,8 +46,14 @@ import java.net.URLEncoder;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener, DinoStatsDialogFragment.Listener, FragmentServerSearchInventoriesView.FragmentServerSearchInventoriesViewInterface {
 
-    public UsersMeReply user;
     public Fragment activeTabFragment;
+
+    public static void StartActivityWithServer(Context context, final UsersMeServer s) {
+        //Start the activity
+        Intent mIntent = new Intent(context, MainActivity.class);
+        mIntent.putExtra("com.romanport.arkwebmap.STARTUP_SERVER", s);
+        context.startActivity(mIntent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +62,15 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Ensure we have a user
+        if(WebUser.me == null) {
+            throw new RuntimeException("User was null in WebUser.me. You should not have been able to get this far. Exiting...");
+        }
+
+        //Get the requested initial server
+        currentServer = (UsersMeServer)getIntent().getSerializableExtra("com.romanport.arkwebmap.STARTUP_SERVER");
+
+        //Set up UI
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -63,6 +80,9 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Add sidebar servers
+        OnGotUpdatedServers(WebUser.me);
+
         //Create the Fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -71,23 +91,8 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.add(R.id.main_fragment_container, fragment);
         fragmentTransaction.commit();
 
-        //Authenticate user
-        WebUser.SendAuthenticatedGetRequest(this, "https://ark.romanport.com/api/users/@me/?hideInvalid=false", new Response.Listener<Object>() {
-            @Override
-            public void onResponse(Object response) {
-                UsersMeReply reply = (UsersMeReply)response;
-                user = reply;
-
-                //Update cloud messaging (notifications) token
-                SubmitNewCloudMessagingToken();
-
-                //Add servers
-                OnGotUpdatedServers(reply);
-
-                //Show default menu
-                ShowDefaultDisplay(reply);
-            }
-        }, UsersMeReply.class);
+        //Start server
+        OnOpenServer(currentServer, true);
     }
 
     public void SwitchMainFragment(Fragment f) {
@@ -161,7 +166,7 @@ public class MainActivity extends AppCompatActivity
 
     public void OnGotUpdatedServers(UsersMeReply reply) {
         //Add servers to list.
-        ArkServerListEntryAdapter adapter=new ArkServerListEntryAdapter(this, user.servers);
+        ArkServerListEntryAdapter adapter=new ArkServerListEntryAdapter(this, WebUser.me.servers);
         ListView list =(ListView)findViewById(R.id.server_list);
         list.setAdapter(adapter);
 
@@ -171,7 +176,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Set server
-                OnOpenServer(user.servers[position], false);
+                OnOpenServer(WebUser.me.servers[position], false);
 
                 //Close drawer
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -180,35 +185,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    public void SubmitNewCloudMessagingToken() {
-        //Request
-        final AppCompatActivity c = this;
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            //Todo: Log
-                            return;
-                        }
 
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-
-                        //Create payload
-                        PostNotificationTokenPayload payload = new PostNotificationTokenPayload();
-                        payload.token = token;
-
-                        //Submit to master server
-                        WebUser.SendAuthenticatedPostRequest(c, "https://ark.romanport.com/api/users/@me/notification_token", payload, new Response.Listener<Object>() {
-                            @Override
-                            public void onResponse(Object response) {
-                                //Submitted.
-                            }
-                        }, OkReply.class);
-                    }
-                });
-    }
 
     public void ShowFailure(String message) {
         Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
@@ -220,7 +197,7 @@ public class MainActivity extends AppCompatActivity
     public ArkServerCreateSession currentSession;
     public ArkTribe currentTribe;
 
-    public void OnOpenServer(final UsersMeServer requestServer, final Boolean isResuming) {
+    public void OnOpenServer(final UsersMeServer requestServer, final Boolean force) {
         //Ping server to make sure it is ok
         final AppCompatActivity c = this;
         WebUser.SendAuthenticatedGetRequest(c, requestServer.endpoint_ping, new Response.Listener<Object>() {
@@ -228,13 +205,9 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(Object objPingReply) {
                 //If the server is offline, stop
                 PingReply pingReply = (PingReply)objPingReply;
-                if(!pingReply.online) {
+                if(!pingReply.online && !force) {
                     //Show error toast
-                    if(isResuming) {
-                        Toast.makeText(c, c.getString(R.string.error_resume_ping_offline), Toast.LENGTH_LONG).show();
-                    }
-                    else
-                        Toast.makeText(c, c.getString(R.string.error_ping_offline), Toast.LENGTH_LONG).show();
+                    Toast.makeText(c, c.getString(R.string.error_ping_offline), Toast.LENGTH_LONG).show();
                 } else {
                     //Continue to load server
                     currentServer = requestServer;
@@ -315,13 +288,5 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void ShowDefaultDisplay(final UsersMeReply me) {
-        //Shows the default menu if no server is selected. If there are no servers, a different prompt is shown.
-        if(me.servers.length == 0 || true) {
-            //Show the no servers menu.
-            Intent intent = new Intent(this, NoServersActivity.class);
-            this.startActivity(intent);
-            this.finish();
-        }
-    }
+
 }

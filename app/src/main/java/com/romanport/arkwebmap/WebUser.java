@@ -17,6 +17,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeReply;
 
 import org.json.JSONObject;
 
@@ -25,6 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class WebUser {
+
+    public static UsersMeReply me;
 
     public static void SendAuthenticatedGetRequest(final Activity c, String url, final Response.Listener<Object> callback, final Type returnType) {
         SendAuthenticatedRequest(c, url, callback, new byte[0], Request.Method.GET, returnType);
