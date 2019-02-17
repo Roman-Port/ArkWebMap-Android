@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +42,7 @@ import android.support.v4.app.Fragment;
 import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener, DinoStatsDialogFragment.Listener {
+        implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener, DinoStatsDialogFragment.Listener, FragmentServerSearchInventoriesView.FragmentServerSearchInventoriesViewInterface {
 
     public UsersMeReply user;
     public Fragment activeTabFragment;
@@ -139,6 +140,14 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("com.romanport.arkwebmap.SERVER_ID", currentServerId);
             intent.putExtra("com.romanport.arkwebmap.SERVER_NOTIFICATIONS", currentServer.enabled_notifications);
             startActivity(intent);
+        }
+        if(id == R.id.show_map) {
+            //Show fragment for map
+            ShowMapFragment();
+        }
+        if(id == R.id.search_inventories) {
+            //Open the fragment for this.
+            SwitchMainFragment(new FragmentServerSearchInventoriesView());
         }
 
         //Close drawer
@@ -246,15 +255,20 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void OnGotNewMapData() {
-        //Update UI elements
-        ((TextView)findViewById(R.id.serverMenuName)).setText(currentServer.display_name);
-
+    public void ShowMapFragment() {
         //Create a command to send to the map.
         MapStartupCommand mapStartup = new MapStartupCommand();
         mapStartup.mapUrl = currentSession.endpoint_game_map;
         mapStartup.dinos = currentTribe.dinos;
         UpdateMap(mapStartup);
+    }
+
+    public void OnGotNewMapData() {
+        //Update UI elements
+        ((TextView)findViewById(R.id.serverMenuName)).setText(currentServer.display_name);
+
+        //Show map
+        ShowMapFragment();
 
     }
 

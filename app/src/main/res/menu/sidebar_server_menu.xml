@@ -5,6 +5,14 @@
     <item android:title="@string/mainmenu_tribe">
         <menu>
             <item
+                android:id="@+id/show_map"
+                android:icon="@drawable/baseline_map_24"
+                android:title="@string/mainmenu_tribe_map" />
+            <item
+                android:id="@+id/show_baby_dinos"
+                android:icon="@drawable/baseline_assignment_ind_24"
+                android:title="@string/mainmenu_tribe_babydinos" />
+            <item
                 android:id="@+id/locate_dinos"
                 android:icon="@drawable/baseline_near_me_24"
                 android:title="@string/mainmenu_tribe_locatedinos" />
@@ -18,7 +26,7 @@
         <menu>
             <item
                 android:id="@+id/server_notifications_menu_btn"
-                android:icon="@drawable/baseline_exit_to_app_24"
+                android:icon="@drawable/baseline_notifications_active_24"
                 android:title="@string/mainmenu_server_notifications" />
             <item
                 android:id="@+id/hide_server"

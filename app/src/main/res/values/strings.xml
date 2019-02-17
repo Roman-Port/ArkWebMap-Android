@@ -12,8 +12,10 @@
     <string name="login_description">To get started with ArkWebMap, you\'ll need to sign in with Steam to access your Ark servers and tribes.</string>
 
     <string name="mainmenu_tribe">Tribe</string>
+    <string name="mainmenu_tribe_map">Map</string>
+    <string name="mainmenu_tribe_babydinos">Baby Dinos</string>
     <string name="mainmenu_tribe_locatedinos">Locate Dinos</string>
-    <string name="mainmenu_tribe_searchinventories">Search Inventories</string>
+    <string name="mainmenu_tribe_searchinventories">Search Items</string>
     <string name="mainmenu_server">Server</string>
     <string name="mainmenu_server_notifications">Notifications</string>
     <string name="mainmenu_server_hide">Hide Server</string>
@@ -26,5 +28,8 @@
     <string name="notification_settings_category_babydinos_low">Baby Dino Food Low (&lt; 30 minutes of food)</string>
     <string name="notification_settings_category_babydinos_critical">Baby Dino Critical (&lt; 8 minutes of food)</string>
     <string name="notification_settings_category_babydinos_starving">Baby Dino Starving (&lt; 1 minute of food)</string>
+
+    <!-- Item search fragment -->
+    <string name="item_search_fragment_hint">Item Type</string>
 
 </resources>
