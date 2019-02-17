@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:paddingBottom="16dp"
+    tools:context=".DinoStatsDialogFragment"
+    android:background="@color/colorPrimary">
+
+    <ImageView
+        android:id="@+id/dinoBottomSheetImage"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="Dino Image"/>
+
+    <TextView
+        android:id="@+id/dinoBottomSheetName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="14dp"
+        android:text="Name"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/dinoBottomSheetImage"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/colorTextWhite"/>
+
+    <TextView
+        android:id="@+id/dinoBottomSheetClassname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:text="Classname"
+        app:layout_constraintStart_toEndOf="@+id/dinoBottomSheetImage"
+        app:layout_constraintTop_toBottomOf="@+id/dinoBottomSheetName"
+        android:textColor="@color/colorTextWhite"/>
+
+    <include
+        layout="@layout/progressbar_dino_stat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:id="@+id/dinoBottomSheetStatHealth"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dinoBottomSheetImage"/>
+
+    <include
+        layout="@layout/progressbar_dino_stat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:id="@+id/dinoBottomSheetStatStamina"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dinoBottomSheetStatHealth"/>
+
+    <include
+        layout="@layout/progressbar_dino_stat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:id="@+id/dinoBottomSheetStatFood"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dinoBottomSheetStatStamina"/>
+
+    <include
+        layout="@layout/progressbar_dino_stat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:id="@+id/dinoBottomSheetStatWeight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dinoBottomSheetStatFood"/>
+
+
+</android.support.constraint.ConstraintLayout>

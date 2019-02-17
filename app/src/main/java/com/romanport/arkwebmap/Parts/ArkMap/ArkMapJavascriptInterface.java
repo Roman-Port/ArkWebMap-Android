@@ -25,4 +25,10 @@ public class ArkMapJavascriptInterface {
         //Tell the fragment we are ready.
         mFrag.OnMapReady();
     }
+
+    @JavascriptInterface
+    public void onDinoClicked(String url) {
+        //Dino clicked. Pass it onto the native area.
+        mFrag.OnDinoClicked(url);
+    }
 }

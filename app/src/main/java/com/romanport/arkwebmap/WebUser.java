@@ -1,5 +1,6 @@
 package com.romanport.arkwebmap;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,11 +26,11 @@ import java.util.Map;
 
 public class WebUser {
 
-    public static void SendAuthenticatedGetRequest(final AppCompatActivity c, String url, final Response.Listener<Object> callback, final Type returnType) {
+    public static void SendAuthenticatedGetRequest(final Activity c, String url, final Response.Listener<Object> callback, final Type returnType) {
         SendAuthenticatedRequest(c, url, callback, new byte[0], Request.Method.GET, returnType);
     }
 
-    public static void SendAuthenticatedPostRequest(final AppCompatActivity c, String url, Object payload,  final Response.Listener<Object> callback, final Type returnType) {
+    public static void SendAuthenticatedPostRequest(final Activity c, String url, Object payload, final Response.Listener<Object> callback, final Type returnType) {
         //Serialize
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
@@ -38,7 +39,7 @@ public class WebUser {
         SendAuthenticatedRequest(c, url, callback, payloadString.getBytes(), Request.Method.POST, returnType);
     }
 
-    public static void SendAuthenticatedRequest(final AppCompatActivity c, String url, final Response.Listener<Object> callback, final byte[] body, final int method, final Type returnType) {
+    public static void SendAuthenticatedRequest(final Activity c, String url, final Response.Listener<Object> callback, final byte[] body, final int method, final Type returnType) {
         Log("Entering SendAuthenticatedRequest with GET to "+url);
 
         //Send request
@@ -112,7 +113,7 @@ public class WebUser {
         Log.println(Log.DEBUG, "ARK-NET",message);
     }
 
-    private static void OpenLoginPage(AppCompatActivity c) {
+    private static void OpenLoginPage(Activity c) {
         Intent intent = new Intent(c, SteamLoginActivity.class);
         c.startActivity(intent);
         c.finish();

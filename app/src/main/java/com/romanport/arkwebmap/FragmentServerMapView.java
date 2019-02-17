@@ -105,6 +105,10 @@ public class FragmentServerMapView extends Fragment {
 
     }
 
+    public void OnDinoClicked(String url) {
+        mListener.onDinoClick(url);
+    }
+
     public WebView GetMapWebview() {
         return (WebView)getView().findViewById(R.id.map_webview);
     }

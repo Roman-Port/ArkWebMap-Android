@@ -36,6 +36,7 @@ import com.google.gson.GsonBuilder;
 import com.romanport.arkwebmap.Entities.MapStartupCommand;
 import com.romanport.arkwebmap.NetEntities.ArkServerNotificationsMenuActivity;
 import com.romanport.arkwebmap.NetEntities.AuthReply;
+import com.romanport.arkwebmap.NetEntities.Dinos.ArkDinosReply;
 import com.romanport.arkwebmap.NetEntities.OkReply;
 import com.romanport.arkwebmap.NetEntities.PostNotificationTokenPayload;
 import com.romanport.arkwebmap.NetEntities.Servers.ArkServerCreateSession;
@@ -48,7 +49,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener, DinoStatsDialogFragment.Listener {
 
     public UsersMeReply user;
     public Fragment activeTabFragment;
@@ -270,6 +271,21 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDinoClick(String url) {
-        //TODO: Called when a dinosaur is clicked on the map and we need to show the modal.
+        //Called when a dinosaur is clicked on the map and we need to show the modal.
+        //Make a request to download Dino data
+        WebUser.SendAuthenticatedGetRequest(this, url, new Response.Listener<Object>() {
+            @Override
+            public void onResponse(Object response) {
+                ArkDinosReply data = (ArkDinosReply)response;
+                DinoStatsDialogFragment.newInstance(data).show(getSupportFragmentManager(), "dialog");
+
+            }
+        }, ArkDinosReply.class);
+
+    }
+
+    @Override
+    public void onDinoModalButtonClicked(int i) {
+
     }
 }
