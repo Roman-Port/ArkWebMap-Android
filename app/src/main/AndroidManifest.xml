@@ -41,6 +41,14 @@
             android:name=".ArkServerNotificationsMenuActivity"
             android:label="@string/title_activity_ark_server_notifications_menu"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".NoServersActivity"
+            android:label="@string/title_activity_no_servers"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ActivityHub"
+            android:label="@string/title_activity_hub"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

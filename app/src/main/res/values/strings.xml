@@ -7,6 +7,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="error_ping_offline">Sorry, that server is offline. Ask the server owner to start it, or try again later.</string>
+    <string name="error_resume_ping_offline">Sorry, the last server you used is currently offline.</string>
 
     <string name="login_welcome">Welcome!</string>
     <string name="login_description">To get started with ArkWebMap, you\'ll need to sign in with Steam to access your Ark servers and tribes.</string>
@@ -31,5 +32,18 @@
 
     <!-- Item search fragment -->
     <string name="item_search_fragment_hint">Item Type</string>
+
+    <!-- Welcome (no servers) screen -->
+    <string name="title_activity_no_servers">Welcome</string>
+    <string name="welcome_no_servers_title">Welcome to ArkWebMap!</string>
+    <string name="welcome_no_servers_text">ArkWebMap is an app for viewing your Ark: Survival Evolved tribe, dinos, and items. Get started by joining an Ark: Survival Evolved server with ArkWebMap, or adding it to your own server.</string>
+    <string name="welcome_no_servers_demo_btn">View Demo Server</string>
+    <string name="welcome_no_servers_add_btn">Add your Own Server</string>
+    <string name="welcome_no_servers_add_btn_dialog_title">Create Server</string>
+    <string name="welcome_no_servers_add_btn_dialog_sub">To create a server, visit https://ark.romanport.com/ in a web browser, then click the plus button in the bottom left.</string>
+    <string name="welcome_no_servers_add_btn_dialog_ok">Ok</string>
+
+    <!-- Hub -->
+    <string name="title_activity_hub">Hub</string>
 
 </resources>

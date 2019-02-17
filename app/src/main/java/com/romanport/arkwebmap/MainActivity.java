@@ -83,6 +83,9 @@ public class MainActivity extends AppCompatActivity
 
                 //Add servers
                 OnGotUpdatedServers(reply);
+
+                //Show default menu
+                ShowDefaultDisplay(reply);
             }
         }, UsersMeReply.class);
     }
@@ -168,7 +171,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Set server
-                OnOpenServer(user.servers[position]);
+                OnOpenServer(user.servers[position], false);
 
                 //Close drawer
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -217,7 +220,7 @@ public class MainActivity extends AppCompatActivity
     public ArkServerCreateSession currentSession;
     public ArkTribe currentTribe;
 
-    public void OnOpenServer(final UsersMeServer requestServer) {
+    public void OnOpenServer(final UsersMeServer requestServer, final Boolean isResuming) {
         //Ping server to make sure it is ok
         final AppCompatActivity c = this;
         WebUser.SendAuthenticatedGetRequest(c, requestServer.endpoint_ping, new Response.Listener<Object>() {
@@ -227,7 +230,11 @@ public class MainActivity extends AppCompatActivity
                 PingReply pingReply = (PingReply)objPingReply;
                 if(!pingReply.online) {
                     //Show error toast
-                    Toast.makeText(c, c.getString(R.string.error_ping_offline), Toast.LENGTH_LONG).show();
+                    if(isResuming) {
+                        Toast.makeText(c, c.getString(R.string.error_resume_ping_offline), Toast.LENGTH_LONG).show();
+                    }
+                    else
+                        Toast.makeText(c, c.getString(R.string.error_ping_offline), Toast.LENGTH_LONG).show();
                 } else {
                     //Continue to load server
                     currentServer = requestServer;
@@ -306,5 +313,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDinoModalButtonClicked(int i) {
 
+    }
+
+    public void ShowDefaultDisplay(final UsersMeReply me) {
+        //Shows the default menu if no server is selected. If there are no servers, a different prompt is shown.
+        if(me.servers.length == 0 || true) {
+            //Show the no servers menu.
+            Intent intent = new Intent(this, NoServersActivity.class);
+            this.startActivity(intent);
+            this.finish();
+        }
     }
 }
