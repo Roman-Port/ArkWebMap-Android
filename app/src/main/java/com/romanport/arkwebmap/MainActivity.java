@@ -1,16 +1,11 @@
 package com.romanport.arkwebmap;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,8 +28,6 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.romanport.arkwebmap.Entities.MapStartupCommand;
-import com.romanport.arkwebmap.NetEntities.ArkServerNotificationsMenuActivity;
-import com.romanport.arkwebmap.NetEntities.AuthReply;
 import com.romanport.arkwebmap.NetEntities.Dinos.ArkDinosReply;
 import com.romanport.arkwebmap.NetEntities.OkReply;
 import com.romanport.arkwebmap.NetEntities.PostNotificationTokenPayload;
@@ -46,7 +38,6 @@ import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeReply;
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeServer;
 import android.support.v4.app.Fragment;
 
-import java.net.URI;
 import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity
@@ -146,6 +137,7 @@ public class MainActivity extends AppCompatActivity
             //Open the activity for the settings page.
             Intent intent = new Intent(this, ArkServerNotificationsMenuActivity.class);
             intent.putExtra("com.romanport.arkwebmap.SERVER_ID", currentServerId);
+            intent.putExtra("com.romanport.arkwebmap.SERVER_NOTIFICATIONS", currentServer.enabled_notifications);
             startActivity(intent);
         }
 

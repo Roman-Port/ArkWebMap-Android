@@ -1,5 +1,7 @@
 package com.romanport.arkwebmap.NetEntities.UsersMe;
 
+import java.util.List;
+
 public class UsersMeServer {
     public String display_name;
     public String image_url;
@@ -10,4 +12,5 @@ public class UsersMeServer {
     public String endpoint_ping;
     public String endpoint_leave;
     public String endpoint_createsession;
+    public String[] enabled_notifications;
 }
