@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -39,12 +40,15 @@ import com.romanport.arkwebmap.NetEntities.Servers.PingReply;
 import com.romanport.arkwebmap.NetEntities.Servers.Tribes.ArkTribe;
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeReply;
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeServer;
+import com.romanport.arkwebmap.Parts.BabyDinos.FragmentServerBabyDinos;
+import com.romanport.arkwebmap.Parts.MainViewFragmentInterface;
+
 import android.support.v4.app.Fragment;
 
 import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener, DinoStatsDialogFragment.Listener, FragmentServerSearchInventoriesView.FragmentServerSearchInventoriesViewInterface {
+        implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener, DinoStatsDialogFragment.Listener, FragmentServerSearchInventoriesView.FragmentServerSearchInventoriesViewInterface, MainViewFragmentInterface {
 
     public Fragment activeTabFragment;
 
@@ -64,7 +68,10 @@ public class MainActivity extends AppCompatActivity
 
         //Ensure we have a user
         if(WebUser.me == null) {
-            throw new RuntimeException("User was null in WebUser.me. You should not have been able to get this far. Exiting...");
+            //Jump to loader
+            Intent mIntent = new Intent(this, StartupActivity.class);
+            startActivity(mIntent);
+            finish();
         }
 
         //Get the requested initial server
@@ -110,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            drawer.openDrawer(GravityCompat.START);
         }
     }
 
@@ -148,6 +155,10 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("com.romanport.arkwebmap.SERVER_ID", currentServerId);
             intent.putExtra("com.romanport.arkwebmap.SERVER_NOTIFICATIONS", currentServer.enabled_notifications);
             startActivity(intent);
+        }
+        if(id == R.id.show_baby_dinos) {
+            //Show baby dinos
+            SwitchMainFragment(new FragmentServerBabyDinos());
         }
         if(id == R.id.show_map) {
             //Show fragment for map
@@ -277,14 +288,13 @@ public class MainActivity extends AppCompatActivity
     public void onDinoClick(String url) {
         //Called when a dinosaur is clicked on the map and we need to show the modal.
         //Make a request to download Dino data
-        WebUser.SendAuthenticatedGetRequest(this, url, new Response.Listener<Object>() {
+        GetDino( url, new Response.Listener<ArkDinosReply>() {
             @Override
-            public void onResponse(Object response) {
-                ArkDinosReply data = (ArkDinosReply)response;
+            public void onResponse(ArkDinosReply data) {
                 DinoStatsDialogFragment.newInstance(data).show(getSupportFragmentManager(), "dialog");
 
             }
-        }, ArkDinosReply.class);
+        });
 
     }
 
@@ -293,5 +303,29 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    @Override
+    public void GetDino(String url, final Response.Listener<ArkDinosReply> callback) {
+        WebUser.SendAuthenticatedGetRequest(this, url, new Response.Listener<Object>() {
+            @Override
+            public void onResponse(Object response) {
+                ArkDinosReply data = (ArkDinosReply)response;
+                callback.onResponse(data);
+
+            }
+        }, ArkDinosReply.class);
+    }
+    @Override
+    public ArkTribe GetTribe() {
+        return currentTribe;
+    }
+    @Override
+    public ArkServerCreateSession GetSession() {
+        return currentSession;
+    }
+    @Override
+    public UsersMeServer GetServer() {
+        return currentServer;
+    }
 
 }
