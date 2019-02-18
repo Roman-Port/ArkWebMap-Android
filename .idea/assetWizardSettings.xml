@@ -46,8 +46,9 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="ffffff" />
-                                      <entry key="foregroundImage" value="C:\Users\Roman\AndroidStudioProjects\ArkWebMap\app\src\main\res\drawable\ark web map logo.png" />
+                                      <entry key="foregroundImage" value="C:\Users\Roman\Documents\ark web map logo.png" />
                                       <entry key="legacyIconShape" value="CIRCLE" />
+                                      <entry key="showGrid" value="true" />
                                       <entry key="webIconShape" value="CIRCLE" />
                                     </map>
                                   </option>
