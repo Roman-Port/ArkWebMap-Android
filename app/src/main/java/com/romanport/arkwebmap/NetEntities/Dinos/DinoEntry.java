@@ -4,12 +4,12 @@ import java.util.List;
 
 public class DinoEntry {
     public DinoEntryStats additiveTamingBonus;
-    public List<DinoEntryFood> adultFoods;
+    public DinoEntryFood[] adultFoods;
     public float babyAgeSpeed;
     public float babyGestationSpeed;
     public DinoEntryStats baseLevel;
     public String blueprintPath;
-    public List<DinoEntryFood> childFoods;
+    public DinoEntryFood[] childFoods;
     public String classname;
     public float colorizationIntensity;
     public float extraBabyAgeSpeedMultiplier;

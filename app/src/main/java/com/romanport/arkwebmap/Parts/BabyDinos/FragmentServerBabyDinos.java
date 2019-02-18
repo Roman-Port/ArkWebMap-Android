@@ -7,9 +7,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
+import com.romanport.arkwebmap.NetEntities.Dinos.ArkDinosReply;
+import com.romanport.arkwebmap.Parts.Hub.ArkHubServerListAdapter;
 import com.romanport.arkwebmap.Parts.MainViewFragmentInterface;
 import com.romanport.arkwebmap.R;
+import com.romanport.arkwebmap.WebUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,6 +27,7 @@ import com.romanport.arkwebmap.R;
 public class FragmentServerBabyDinos extends Fragment {
 
     private MainViewFragmentInterface mListener;
+    public ArkDinosReply[] dinos;
 
     public FragmentServerBabyDinos() {
         // Required empty public constructor
@@ -41,7 +47,22 @@ public class FragmentServerBabyDinos extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_server_baby_dinos, container, false);
+        View v = inflater.inflate(R.layout.fragment_server_baby_dinos, container, false);
+
+        //Add list of dinos
+        ListView list = v.findViewById(R.id.baby_dino_list);
+        BabyDinoEntryAdapter adapter = new BabyDinoEntryAdapter(this.getActivity(), dinos);
+        list.setAdapter(adapter);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+
+        return v;
     }
 
     @Override
@@ -53,6 +74,9 @@ public class FragmentServerBabyDinos extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+        //Grab dinos using the interface
+        dinos = mListener.GetTribe().baby_dinos;
     }
 
     @Override

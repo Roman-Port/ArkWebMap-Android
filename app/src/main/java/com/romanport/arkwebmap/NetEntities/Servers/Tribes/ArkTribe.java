@@ -9,5 +9,5 @@ public class ArkTribe {
     public int tribeId;
     public List<String> baby_dino_urls;
     public List<ArkBasicTribeDino> dinos;
-    public List<ArkDinosReply> baby_dinos;
+    public ArkDinosReply[] baby_dinos;
 }

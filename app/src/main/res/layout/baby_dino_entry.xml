@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorAccentDark"
+    android:padding="8dp"
+    tools:context=".Parts.BabyDinos.FragmentServerBabyDinos">
+
+    <!-- Header -->
+    <ImageView
+        android:id="@+id/dinoBottomSheetImage"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        android:layout_marginStart="0sp"
+        android:layout_marginTop="4sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="Dino Image"/>
+
+    <TextView
+        android:id="@+id/dinoBottomSheetName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12sp"
+        android:layout_marginTop="0sp"
+        android:text="Name"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/dinoBottomSheetImage"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/colorTextWhite"/>
+
+    <TextView
+        android:id="@+id/dinoBottomSheetClassname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12sp"
+        android:text="Classname"
+        android:textSize="12dp"
+        app:layout_constraintStart_toEndOf="@+id/dinoBottomSheetImage"
+        app:layout_constraintTop_toBottomOf="@+id/dinoBottomSheetName"
+        android:textColor="@color/colorTextAlmostWhite"/>
+
+    <!-- End header -->
+    <!-- Text stats -->
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="12dp"
+        android:id="@+id/textStats"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dinoBottomSheetImage">
+
+        <include layout="@layout/baby_dino_entry_form"
+            android:id="@+id/timeUntilDepleted"/>
+        <include layout="@layout/baby_dino_entry_form"
+            app:layout_constraintTop_toBottomOf="@+id/timeUntilDepleted"
+            android:id="@+id/foodRemaining"
+            android:layout_marginTop="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+    <!-- End text stats -->
+
+    <!-- Bar stats -->
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="28dp"
+        android:id="@+id/barStats"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textStats">
+
+        <include layout="@layout/baby_dino_entry_bar"
+            android:id="@+id/imprintingBar"/>
+        <include layout="@layout/baby_dino_entry_bar"
+            android:id="@+id/maturationBar"
+            app:layout_constraintTop_toBottomOf="@+id/imprintingBar"
+            android:layout_marginTop="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

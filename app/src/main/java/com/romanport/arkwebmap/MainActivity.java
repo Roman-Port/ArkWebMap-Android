@@ -46,6 +46,7 @@ import com.romanport.arkwebmap.Parts.MainViewFragmentInterface;
 import android.support.v4.app.Fragment;
 
 import java.net.URLEncoder;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener, DinoStatsDialogFragment.Listener, FragmentServerSearchInventoriesView.FragmentServerSearchInventoriesViewInterface, MainViewFragmentInterface {
@@ -207,6 +208,7 @@ public class MainActivity extends AppCompatActivity
     public String currentServerId;
     public ArkServerCreateSession currentSession;
     public ArkTribe currentTribe;
+    public Date serverLoadTime;
 
     public void OnOpenServer(final UsersMeServer requestServer) {
         //Ping server to make sure it is ok
@@ -237,6 +239,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(Object response) {
                 currentSession = (ArkServerCreateSession)response;
+                serverLoadTime = new Date();
 
                 //Now, request the Ark tribe.
                 WebUser.SendAuthenticatedGetRequest(c, currentSession.endpoint_tribes, new Response.Listener<Object>() {
@@ -326,6 +329,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public UsersMeServer GetServer() {
         return currentServer;
+    }
+    @Override
+    public double GetServerTimeNow() {
+        //Add the server offset, map time, and time since the map was loaded. Returns time in seconds
+        return currentSession.dayTime + GetServerTimeSinceUpdate();
+    }
+    @Override
+    public double GetServerTimeSinceUpdate() {
+        //Returns the amount of time, in seconds, that has passed since the server last updated the file.
+        return currentSession.mapTimeOffset + ((new Date().getTime() - serverLoadTime.getTime()) / 1000);
     }
 
 }

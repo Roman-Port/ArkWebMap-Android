@@ -11,4 +11,6 @@ public interface MainViewFragmentInterface {
     ArkTribe GetTribe();
     ArkServerCreateSession GetSession();
     UsersMeServer GetServer();
+    double GetServerTimeNow();
+    double GetServerTimeSinceUpdate();
 }

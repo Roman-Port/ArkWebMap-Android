@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/babyDinoEntryBarText">
+
+        <TextView
+            android:id="@+id/itemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="0dp"
+            android:text="Default Name"
+            android:textColor="@color/colorTextWhite"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Default Sub"
+            android:id="@+id/itemSub"
+            android:textColor="@color/colorTextAlmostWhite"
+            android:layout_marginRight="0dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/itemProgressbar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:progressDrawable="@drawable/dino_stat_progressbar"
+        android:max="4"
+        android:progress="3"
+        app:layout_constraintTop_toBottomOf="@+id/babyDinoEntryBarText"
+        android:layout_marginTop="4dp"/>
+</android.support.constraint.ConstraintLayout>

@@ -46,7 +46,10 @@
     <!-- Hub -->
     <string name="title_activity_hub">Hub</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Baby dino manager -->
+    <string name="baby_dino_m_timetilfoodgone">Time Until Food Depleted</string>
+    <string name="baby_dino_m_foodremaining">Food Remaining</string>
+    <string name="baby_dino_m_imprinting">Imprinting</string>
+    <string name="baby_dino_m_maturing">Maturing</string>
 
 </resources>
