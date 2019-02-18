@@ -8,4 +8,19 @@
     tools:context=".ActivityHub"
     tools:showIn="@layout/activity_hub">
 
+
+    <ListView
+        android:id="@+id/hub_server_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="1dp"
+        android:padding="10dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
 </android.support.constraint.ConstraintLayout>

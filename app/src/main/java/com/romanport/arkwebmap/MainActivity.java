@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
 
         //Start server
-        OnOpenServer(currentServer, true);
+        OnOpenServerSkipPingCheck(currentServer);
     }
 
     public void SwitchMainFragment(Fragment f) {
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Set server
-                OnOpenServer(WebUser.me.servers[position], false);
+                OnOpenServer(WebUser.me.servers[position]);
 
                 //Close drawer
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity
     public ArkServerCreateSession currentSession;
     public ArkTribe currentTribe;
 
-    public void OnOpenServer(final UsersMeServer requestServer, final Boolean force) {
+    public void OnOpenServer(final UsersMeServer requestServer) {
         //Ping server to make sure it is ok
         final AppCompatActivity c = this;
         WebUser.SendAuthenticatedGetRequest(c, requestServer.endpoint_ping, new Response.Listener<Object>() {
@@ -205,34 +205,39 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(Object objPingReply) {
                 //If the server is offline, stop
                 PingReply pingReply = (PingReply)objPingReply;
-                if(!pingReply.online && !force) {
+                if(!pingReply.online) {
                     //Show error toast
                     Toast.makeText(c, c.getString(R.string.error_ping_offline), Toast.LENGTH_LONG).show();
                 } else {
                     //Continue to load server
-                    currentServer = requestServer;
-                    //Create a session to get new URLs
-                    WebUser.SendAuthenticatedGetRequest(c, requestServer.endpoint_createsession, new Response.Listener<Object>() {
-                        @Override
-                        public void onResponse(Object response) {
-                            currentSession = (ArkServerCreateSession)response;
-
-                            //Now, request the Ark tribe.
-                            WebUser.SendAuthenticatedGetRequest(c, currentSession.endpoint_tribes, new Response.Listener<Object>() {
-                                @Override
-                                public void onResponse(Object tribe_response) {
-                                    currentTribe = (ArkTribe)tribe_response;
-
-                                    OnGotNewMapData();
-                                }
-                            }, ArkTribe.class);
-                        }
-                    }, ArkServerCreateSession.class);
+                    OnOpenServerSkipPingCheck(requestServer);
                 }
             }
         }, PingReply.class);
 
 
+    }
+
+    public void OnOpenServerSkipPingCheck(final UsersMeServer requestServer) {
+        final AppCompatActivity c = this;
+        currentServer = requestServer;
+        //Create a session to get new URLs
+        WebUser.SendAuthenticatedGetRequest(c, requestServer.endpoint_createsession, new Response.Listener<Object>() {
+            @Override
+            public void onResponse(Object response) {
+                currentSession = (ArkServerCreateSession)response;
+
+                //Now, request the Ark tribe.
+                WebUser.SendAuthenticatedGetRequest(c, currentSession.endpoint_tribes, new Response.Listener<Object>() {
+                    @Override
+                    public void onResponse(Object tribe_response) {
+                        currentTribe = (ArkTribe)tribe_response;
+
+                        OnGotNewMapData();
+                    }
+                }, ArkTribe.class);
+            }
+        }, ArkServerCreateSession.class);
     }
 
     public void ShowMapFragment() {

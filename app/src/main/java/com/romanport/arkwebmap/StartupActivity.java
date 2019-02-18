@@ -22,7 +22,7 @@ public class StartupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_startup);
 
         //Authenticate user
-        WebUser.SendAuthenticatedGetRequest(this, "https://ark.romanport.com/api/users/@me/?hideInvalid=false", new Response.Listener<Object>() {
+        WebUser.SendAuthenticatedGetRequest(this, "https://ark.romanport.com/api/users/@me/?hideInvalid=false&pingAllServers=true", new Response.Listener<Object>() {
             @Override
             public void onResponse(Object response) {
                 UsersMeReply reply = (UsersMeReply)response;

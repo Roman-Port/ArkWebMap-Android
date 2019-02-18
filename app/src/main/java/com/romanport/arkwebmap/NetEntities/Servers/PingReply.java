@@ -1,6 +1,8 @@
 package com.romanport.arkwebmap.NetEntities.Servers;
 
-public class PingReply {
+import java.io.Serializable;
+
+public class PingReply implements Serializable {
     public String display_name;
     public String image_url;
     public String owner_uid;
