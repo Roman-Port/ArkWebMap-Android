@@ -3,6 +3,7 @@ package com.romanport.arkwebmap;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -42,22 +43,29 @@ import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeReply;
 import com.romanport.arkwebmap.NetEntities.UsersMe.UsersMeServer;
 import com.romanport.arkwebmap.Parts.BabyDinos.FragmentServerBabyDinos;
 import com.romanport.arkwebmap.Parts.MainViewFragmentInterface;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import android.support.v4.app.Fragment;
 
+import org.w3c.dom.Text;
+
 import java.net.URLEncoder;
 import java.util.Date;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener, FragmentServerSearchInventoriesView.FragmentServerSearchInventoriesViewInterface, MainViewFragmentInterface {
 
     public Fragment activeTabFragment;
 
-    public static void StartActivityWithServer(Context context, final UsersMeServer s) {
+    public static void StartActivityWithServer(Activity context, final UsersMeServer s) {
         //Start the activity
         Intent mIntent = new Intent(context, MainActivity.class);
         mIntent.putExtra("com.romanport.arkwebmap.STARTUP_SERVER", s);
         context.startActivity(mIntent);
+        context.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
@@ -91,6 +99,9 @@ public class MainActivity extends AppCompatActivity
         //Add sidebar servers
         OnGotUpdatedServers(WebUser.me);
 
+        //Set user info
+        UpdateUserInfo(WebUser.me);
+
         //Create the Fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -101,6 +112,12 @@ public class MainActivity extends AppCompatActivity
 
         //Start server
         OnOpenServerSkipPingCheck(currentServer);
+
+        //Store last server
+        SharedPreferences sharedPref = getSharedPreferences("com.romanport.arkwebmap.WEB", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("com.romanport.arkwebmap.LATEST_SERVER_ID", currentServer.id);
+        editor.apply();
     }
 
     public void SwitchMainFragment(Fragment f) {
@@ -197,7 +214,18 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    public void UpdateUserInfo(UsersMeReply user) {
+        //Add image
+        RequestCreator p = Picasso.get().load(user.profile_image_url);
+        p.noFade();
+        p.error(R.drawable.failed_to_load_image);
+        CircleImageView t = (CircleImageView)findViewById(R.id.user_icon);
+        p.into(t);
 
+        //Set username
+        TextView username = findViewById(R.id.user_name);
+        username.setText(user.screen_name);
+    }
 
     public void ShowFailure(String message) {
         Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();

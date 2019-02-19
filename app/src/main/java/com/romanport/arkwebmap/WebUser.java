@@ -2,8 +2,10 @@ package com.romanport.arkwebmap;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Xml;
@@ -66,26 +68,39 @@ public class WebUser {
             @Override
             public void onErrorResponse(VolleyError error) {
                 //There was an error. If this is a standard server error, (500) we should parse the error.
-                if(error.networkResponse.statusCode == 500) {
+                if(error.networkResponse == null) {
+                    //No server connection.
+                    ReturnToLauncherWithMessageId(c, R.string.error_net_connect_title, R.string.error_net_connect_sub);
+                }
+                else if(error.networkResponse.statusCode == 500) {
                     //Convert data to string
                     String response = new String(error.networkResponse.data);
                     try {
                         //Parse incoming JSON
                         JSONObject jObject = new JSONObject(response);
                         Integer errorCode = jObject.getInt("error_code");
-                        if(errorCode == 5) {
+                        if (errorCode == 5) {
                             //Not authenticated. Take them to the signin page.
                             Log("User was not authenticated. Pushing to signin page.");
                             OpenLoginPage(c);
                         } else {
-                            Log("Unknown error code '"+errorCode.toString()+"'. Returning null.");
+                            Log("Unknown error code '" + errorCode.toString() + "'. Returning null.");
+                            ReturnToHubWithMessageId(c, R.string.error_net_server_error_title, "Got "+jObject.getString("screen_error"));
+
                         }
-                    } catch(Exception ex) {
+                    } catch (Exception ex) {
                         //More serious problem.
-                        Log("Got 500 error from server; failed to parse as JSON.");
+                        ReturnToHubWithMessageId(c, R.string.error_net_unexpected_title, R.string.error_net_unexpected_sub);
                     }
+                } else if (error.networkResponse.statusCode == 521) {
+                    //This is a error communicating with sub servers.
+                    ReturnToHubWithMessageId(c, R.string.error_net_521_title, R.string.error_net_521_sub);
+                } else if (error.networkResponse.statusCode == 503) {
+                    //This is a error communicating with master server.
+                    ReturnToLauncherWithMessageId(c, R.string.error_net_503_title, R.string.error_net_503_sub);
                 } else {
-                    Log("Got unexpected error from server; Returning null...");
+                    //Unknown
+                    ReturnToHubWithMessageId(c, R.string.error_net_status_title, R.string.error_net_status_sub);
                 }
             }
 
@@ -120,6 +135,56 @@ public class WebUser {
         Intent intent = new Intent(c, SteamLoginActivity.class);
         c.startActivity(intent);
         c.finish();
+    }
+
+    private static void ReturnToHubWithMessageId(final Activity context, int titleMessageId, int subMessageId) {
+        ReturnToHubWithMessageId(context, titleMessageId, context.getString(subMessageId));
+    }
+
+    private static void ReturnToHubWithMessageId(final Activity context, int titleMessageId, String subMessage) {
+        //Show full dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setPositiveButton(R.string.error_net_btn, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                ReturnToHub(context);
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            public void onCancel(DialogInterface dialog) {
+                ReturnToHub(context);
+            }
+        });
+        builder.setTitle(titleMessageId);
+        builder.setMessage(subMessage);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+    private static void ReturnToLauncherWithMessageId(final Activity context, int titleMessageId, int subMessageId) {
+        //Show full dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setPositiveButton(R.string.error_net_btn, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                context.finish();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            public void onCancel(DialogInterface dialog) {
+                context.finish();
+            }
+        });
+        builder.setTitle(titleMessageId);
+        builder.setMessage(subMessageId);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+    private static void ReturnToHub(final Activity context) {
+        Intent i = new Intent(context, ActivityHub.class);
+        context.startActivity(i);
+        context.finish();
     }
 }
 
