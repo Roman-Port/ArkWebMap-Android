@@ -3,6 +3,7 @@ package com.romanport.arkwebmap.Parts.BabyDinos;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,11 @@ import com.romanport.arkwebmap.Parts.Hub.ArkHubServerListAdapter;
 import com.romanport.arkwebmap.Parts.MainViewFragmentInterface;
 import com.romanport.arkwebmap.R;
 import com.romanport.arkwebmap.WebUser;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,8 +57,9 @@ public class FragmentServerBabyDinos extends Fragment {
 
         //Add list of dinos
         ListView list = v.findViewById(R.id.baby_dino_list);
-        BabyDinoEntryAdapter adapter = new BabyDinoEntryAdapter(this.getActivity(), dinos);
+        BabyDinoEntryAdapter adapter = new BabyDinoEntryAdapter(this.getActivity(), dinos, mListener);
         list.setAdapter(adapter);
+        //TODO: Update this on a timer
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

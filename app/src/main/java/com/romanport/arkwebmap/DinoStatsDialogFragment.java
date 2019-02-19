@@ -9,31 +9,25 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.romanport.arkwebmap.NetEntities.Dinos.ArkDinosReply;
+import com.romanport.arkwebmap.Parts.DinoStatsSheet.DinoInventoryItemAdapter;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
 import org.w3c.dom.Text;
 
-/**
- * <p>A fragment that shows a list of items as a modal bottom sheet.</p>
- * <p>You can show this modal bottom sheet from your activity like this:</p>
- * <pre>
- *     DinoStatsDialogFragment.newInstance(30).show(getSupportFragmentManager(), "dialog");
- * </pre>
- * <p>You activity (or fragment) needs to implement {@link DinoStatsDialogFragment.Listener}.</p>
- */
 public class DinoStatsDialogFragment extends BottomSheetDialogFragment {
-
-    private Listener mListener;
 
     public ArkDinosReply dinoData;
 
@@ -54,23 +48,12 @@ public class DinoStatsDialogFragment extends BottomSheetDialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         final Fragment parent = getParentFragment();
-        if (parent != null) {
-            mListener = (Listener) parent;
-        } else {
-            mListener = (Listener) context;
-        }
     }
 
     @Override
     public void onDetach() {
-        mListener = null;
         super.onDetach();
     }
-
-    public interface Listener {
-        void onDinoModalButtonClicked(int position);
-    }
-
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
@@ -78,6 +61,8 @@ public class DinoStatsDialogFragment extends BottomSheetDialogFragment {
         onGotDinoData(view, dinoData);
 
     }
+
+    int ITEM_ELEMENT_WIDTH = 120;
 
     public void onGotDinoData(final View view, final ArkDinosReply data) {
         //Set data
@@ -88,6 +73,12 @@ public class DinoStatsDialogFragment extends BottomSheetDialogFragment {
         setProgressBarById(view, R.id.dinoBottomSheetStatStamina, data.max_stats.stamina, data.dino.currentStats.stamina, "Stamina", getActivity().getDrawable(R.drawable.arkstatusicon_stamina));
         setProgressBarById(view, R.id.dinoBottomSheetStatWeight, data.max_stats.inventoryWeight, data.dino.currentStats.inventoryWeight, "Weight", getActivity().getDrawable(R.drawable.arkstatusicon_inventoryweight));
         setProgressBarById(view, R.id.dinoBottomSheetStatFood, data.max_stats.food, data.dino.currentStats.food, "Food", getActivity().getDrawable(R.drawable.arkstatusicon_food));
+
+        //Set dino items
+        GridView list = view.findViewById(R.id.dino_inventory_area);
+        DinoInventoryItemAdapter adapter = new DinoInventoryItemAdapter(this.getActivity(), data);
+        list.setAdapter(adapter);
+        //TODO: Make this inventory actually work. It is currently hidden due to scrolling bugs.
     }
 
     private static final float[] NEGATIVE = {

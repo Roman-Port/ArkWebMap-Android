@@ -49,7 +49,7 @@ import java.net.URLEncoder;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener, DinoStatsDialogFragment.Listener, FragmentServerSearchInventoriesView.FragmentServerSearchInventoriesViewInterface, MainViewFragmentInterface {
+        implements NavigationView.OnNavigationItemSelectedListener, FragmentServerMapView.OnFragmentInteractionListener, FragmentServerSearchInventoriesView.FragmentServerSearchInventoriesViewInterface, MainViewFragmentInterface {
 
     public Fragment activeTabFragment;
 
@@ -300,12 +300,6 @@ public class MainActivity extends AppCompatActivity
         });
 
     }
-
-    @Override
-    public void onDinoModalButtonClicked(int i) {
-
-    }
-
 
     @Override
     public void GetDino(String url, final Response.Listener<ArkDinosReply> callback) {
